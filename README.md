@@ -5,14 +5,14 @@ ubicado en [vereda].
 El desintteres estudiantil es un problrma 
 grabe que ze debe resolver 
 ## Enlace de la página
-https://usuario.github.io/nombre-del-repositorio/
+https://johanfelipesanchezgarcia3-png.github.io/jump-and-scape/
 ## Tecnologías usadas
 - HTML
 - CSS
 - JavaScript
 ## Integrantes
 - JOHAN FELIPE SANCHEZ GARCIA - ADMINISTRADOR
-- SSEBASTIAN BARRERO BARRERO - SUPERVISOR
+- SEBASTIAN BARRERO BARRERO - SUPERVISOR
 - ANDRES EDUARDO DIAZ TIMOTE - INVERSIONISTA 
 ## Institución
 Media Técnica en Desarrollo de Software - Grado 11 - Año 2026
