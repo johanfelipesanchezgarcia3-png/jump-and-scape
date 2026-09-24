@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Escapa y Aprende - Juego Educativo 2D</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Fondos Dinámicos Animados -->
+    <div class="bg-canvas"></div>
+    <div class="bg-grid"></div>
+
+    <!-- Contenedor Principal de la Aplicación -->
+    <div id="app-container">
+
+        <!-- ==================== MENÚ PRINCIPAL: SELECCIÓN DE MATERIA ==================== -->
+        <div id="menu-screen" class="screen active">
+            <h1 class="game-title">ESCAPA Y APRENDE</h1>
+            <p class="subtitle">¡Esquiva obstáculos, responde preguntas educativas y consigue la máxima puntuación!</p>
+
+            <div class="subject-grid">
+                <div class="subject-card" data-subject="matematicas">
+                    <div class="subject-icon">📐</div>
+                    <div class="subject-name">Matemáticas</div>
+                    <div class="subject-desc">Álgebra, geometría, lógica y operaciones aritméticas.</div>
+                </div>
+
+                <div class="subject-card" data-subject="espanol">
+                    <div class="subject-icon">📚</div>
+                    <div class="subject-name">Español</div>
+                    <div class="subject-desc">Gramática, ortografía, sinónimos y figuras literarias.</div>
+                </div>
+
+                <div class="subject-card" data-subject="biologia">
+                    <div class="subject-icon">🌿</div>
+                    <div class="subject-name">Biología</div>
+                    <div class="subject-desc">Células, ecosistemas, cuerpo humano y genética.</div>
+                </div>
+
+                <div class="subject-card" data-subject="ingles">
+                    <div class="subject-icon">🇬🇧</div>
+                    <div class="subject-name">Inglés</div>
+                    <div class="subject-desc">Vocabulario, tiempos verbales, gramática y modismos.</div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button id="btn-show-leaderboard" class="btn btn-gold">
+                    <span>🏆</span> Tabla de Récords Top 5
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== SELECCIÓN DE AVATAR ==================== -->
+        <div id="avatar-screen" class="screen">
+            <h2 class="game-title">SELECCIONA TU AVATAR</h2>
+            <p class="subtitle">Cada corredor posee una habilidad especial de aprendizaje</p>
+
+            <div class="avatar-grid">
+                <div class="avatar-card selected" data-avatar="alex">
+                    <div class="avatar-preview">🤠</div>
+                    <div class="avatar-name">Alex Explorador</div>
+                    <div class="avatar-trait">🛡️ Inicia con Escudo Extra</div>
+                </div>
+
+                <div class="avatar-card" data-avatar="maya">
+                    <div class="avatar-preview">👩‍🔬</div>
+                    <div class="avatar-name">Maya Científica</div>
+                    <div class="avatar-trait">⭐ +50% Puntos Extras</div>
+                </div>
+
+                <div class="avatar-card" data-avatar="volt">
+                    <div class="avatar-preview">🤖</div>
+                    <div class="avatar-name">Volt Ciber-Estudiante</div>
+                    <div class="avatar-trait">⚡ Salto Doble Potenciado</div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button id="btn-back-subject" class="btn btn-secondary">⬅️ Volver</button>
+                <button id="btn-start-game" class="btn btn-primary">🚀 ¡Iniciar Carrera!</button>
+            </div>
+        </div>
+
+        <!-- ==================== PANTALLA DE JUEGO (CANVAS) ==================== -->
+        <div id="game-screen" class="screen">
+            <div id="game-hud">
+                <div class="hud-group">
+                    <div class="hud-item"><span>⭐</span> <span id="hud-score">0</span></div>
+                    <div class="hud-item"><span id="hud-lives">❤️❤️❤️</span></div>
+                    <div class="hud-item" style="color:var(--accent-gold);"><span id="hud-combo">x1</span></div>
+                </div>
+
+                <div class="chaser-bar-container">
+                    <span class="chaser-label">Sombra de la Ignorancia</span>
+                    <div class="chaser-bar">
+                        <div id="chaser-fill" class="chaser-fill"></div>
+                    </div>
+                </div>
+
+                <div class="hud-group">
+                    <div class="hud-item" style="color:#00f0ff;"><span id="hud-subject">MATEMÁTICAS</span></div>
+                    <button id="btn-toggle-sound" class="icon-btn">🔊</button>
+                    <button id="btn-toggle-music" class="icon-btn">🎵</button>
+                </div>
+            </div>
+
+            <div id="canvas-container">
+                <canvas id="game-canvas"></canvas>
+                <div id="touch-jump-btn">SALTAR</div>
+            </div>
+        </div>
+
+        <!-- ==================== MODAL DE TRIVIA EN COLISIÓN ==================== -->
+        <div id="trivia-modal" class="modal-overlay">
+            <div class="glass-panel trivia-box">
+                <div class="trivia-header">
+                    <span id="trivia-subject-tag" class="trivia-subject-tag">MATEMÁTICAS</span>
+                    <span id="trivia-timer" class="trivia-timer">⏱️ 15s</span>
+                </div>
+
+                <div id="trivia-question-text" class="question-text">
+                    ¿Pregunta de prueba?
+                </div>
+
+                <div id="trivia-options-grid" class="options-grid">
+                    <!-- Opciones generadas en JS -->
+                </div>
+
+                <div id="trivia-explanation" class="explanation-box">
+                    Explicación de la respuesta...
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TABLA DE CLASIFICACIÓN (TOP 5 POR MATERIA) ==================== -->
+        <div id="leaderboard-screen" class="screen">
+            <div class="glass-panel leaderboard-box">
+                <h2 class="game-title" style="font-size:2rem; margin-bottom:10px;">MEJORES 5 PUNTAJES</h2>
+                <p class="subtitle" style="margin-bottom:15px;">Los estudiantes con el mayor récord de conocimiento</p>
+
+                <div class="subject-tabs">
+                    <button class="tab-btn active" data-tab="matematicas">📐 Matemáticas</button>
+                    <button class="tab-btn" data-tab="espanol">📚 Español</button>
+                    <button class="tab-btn" data-tab="biologia">🌿 Biología</button>
+                    <button class="tab-btn" data-tab="ingles">🇬🇧 Inglés</button>
+                </div>
+
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Estudiante</th>
+                            <th>Puntaje</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-tbody">
+                        <!-- Filas insertadas dinámicamente -->
+                    </tbody>
+                </table>
+
+                <div style="text-align:center;">
+                    <button id="btn-back-menu" class="btn btn-secondary">⬅️ Menú Principal</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== MODAL REGISTRAR ALTO PUNTAJE ==================== -->
+        <div id="highscore-modal" class="modal-overlay">
+            <div class="glass-panel trivia-box" style="max-width:500px;">
+                <h2 class="game-title" style="font-size:2rem; color:var(--accent-gold);">¡NUEVO RÉCORD! 🎉</h2>
+                <p class="subtitle">Lograste entrar al Top 5 de <span id="highscore-subject" style="color:#00f0ff; font-weight:700;">MATEMÁTICAS</span></p>
+
+                <div style="font-size:1.8rem; font-family:'Orbitron'; font-weight:900; color:#00f0ff; margin-bottom:10px;">
+                    <span id="highscore-score-val">0</span> PTS
+                </div>
+
+                <input type="text" id="player-name-input" class="input-field" placeholder="Escribe tu Nombre" maxlength="15" autofocus>
+
+                <button id="btn-save-score" class="btn btn-gold" style="width:100%;">💾 Guardar en Tabla de Posiciones</button>
+            </div>
+        </div>
+
+        <!-- ==================== PANTALLA GAME OVER Y REVISIÓN ==================== -->
+        <div id="gameover-screen" class="screen">
+            <div class="glass-panel" style="max-width:650px; width:100%; text-align:center;">
+                <h2 class="game-title" style="font-size:2.4rem; color:var(--accent-red);">FIN DEL JUEGO</h2>
+                <p id="gameover-reason" class="subtitle" style="color:#ffaa00;">¡La Sombra te ha alcanzado!</p>
+
+                <div class="summary-card">
+                    <div class="summary-stat">
+                        <div id="final-score-val" class="summary-value">0</div>
+                        <div class="summary-label">Puntos Totales</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div id="final-distance-val" class="summary-value">0m</div>
+                        <div class="summary-label">Distancia</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div id="final-accuracy-val" class="summary-value">100%</div>
+                        <div class="summary-label">Precisión Trivia</div>
+                    </div>
+                </div>
+
+                <h3 style="font-family:'Orbitron'; font-size:1rem; margin-bottom:10px; text-align:left; color:#00f0ff;">📖 Repaso Pedagógico de Preguntas:</h3>
+                <div id="gameover-review-list" class="review-list">
+                    <!-- Lista de repaso cargada dinámicamente -->
+                </div>
+
+                <div class="btn-group">
+                    <button id="btn-play-again" class="btn btn-primary">🔄 Jugar de Nuevo</button>
+                    <button id="btn-gameover-menu" class="btn btn-secondary">🏠 Menú Principal</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts del Juego -->
+    <script src="questions.js"></script>
+    <script src="audio.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
